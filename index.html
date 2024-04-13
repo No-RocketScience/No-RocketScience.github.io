@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+    <script>
+        $(function () {
+            var cookies = Cookies.get();
+            $.each(cookies, function (cookie) {
+                $("#" + cookie).prop("checked", cookies[cookie] === "true");
+                if (cookie.indexOf("form") != -1 && cookies[cookie] === "true") {
+                    let index = cookie.substr(-1);
+                    $("#info-form-" + index).prop("hidden", false);
+                    if (index != 1) {
+                        $("#info-form-1").prop("hidden", true);
+                    }
+                    if (index != 2) {
+                        $("#info-form-2").prop("hidden", true);
+                    }
+                    if (index != 3) {
+                        $("#info-form-3").prop("hidden", true);
+                    }
+                }
+            });
+            $("input.btn-check").on("click", function () {
+                Cookies.set(this.id, this.checked, { sameSite: 'strict' });
+                if (this.id.indexOf("form") != -1) {
+                    let index = this.id.substr(-1);
+                    $("#info-form-" + index).prop("hidden", false);
+                    if (index != 1) {
+                        Cookies.set("form1", false, { sameSite: 'strict' });
+                        $("#info-form-1").prop("hidden", true);
+                    }
+                    if (index != 2) {
+                        Cookies.set("form2", false, { sameSite: 'strict' });
+                        $("#info-form-2").prop("hidden", true);
+                    }
+                    if (index != 3) {
+                        Cookies.set("form3", false, { sameSite: 'strict' });
+                        $("#info-form-3").prop("hidden", true);
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+
+<body class="mx-auto bg-secondary">
+    <div class="container text-center mt-5">
+        <div class="row bg-dark-subtle mb-2 g-0">
+            <div class="col-3 border border-3 border-black align-middle">
+                <div class="position-relative top-50 start-50 translate-middle">Form</div>
+            </div>
+            <div class="col border border-start-0 border-3 border-black align-middle py-3">
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="form1" autocomplete="off" checked>
+                    <label class="btn btn-outline-secondary" for="form1">Battle</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="form2" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="form2">Scout</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="form3" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="form3">Worker</label>
+                </div>
+            </div>
+            <div class="w-100"></div>
+            <div class="col border border-top-0 border-3 border-black align-middle">
+                <span id="info-form-1" hidden>
+                    +1D4 to Weapon Attacks.<br>
+                    Reduce any damage taken by 2.
+                </span>
+                <span id="info-form-2">
+                    +1D4 to all Perception and Investigation checks.<br>
+                    Movementspeed +10ft.
+                </span>
+                <span id="info-form-3" hidden>
+                    +1D4 to all Tool Checks, Strength Checks and Strength Saving Throws.<br>
+                    Count as large creature when pulling, pushing or carrying.
+                </span>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle mb-2 g-0">
+            <div class="col border border-3 border-black align-middle">
+                Infusions
+            </div>
+        </div>
+        <div class="row bg-dark-subtle mb-2 g-0">
+            <div class="col border border-3 border-black align-middle">
+                <div class="position-relative top-50 start-50 translate-middle">Armor of Resistance <span
+                        class="badge text-bg-secondary">A</span></div>
+            </div>
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-1" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-1">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">Bag of Holding</div>
+            </div>
+
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-2" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-2">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">
+                    Belt of Hill Giant Strength
+                    <span class="badge text-bg-secondary">A</span>
+                </div>
+            </div>
+
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-3" checked disabled autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-3">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">
+                    Cloak of the Bat
+                    <span class="badge text-bg-secondary">A</span>
+                </div>
+            </div>
+
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-4" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-4">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">
+                    Enhanced Arcane Focus
+                    <span class="badge text-bg-secondary">A</span>
+                </div>
+            </div>
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-5" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-5">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">Enhanced Defense</div>
+            </div>
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-6" checked disabled autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-6">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">Mind Sharpener</div>
+            </div>
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-7" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-7">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">
+                    Radiant Weapon
+                    <span class="badge text-bg-secondary">A</span>
+                </div>
+            </div>
+
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-8" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-8">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">
+                    Ring of Protection
+                    <span class="badge text-bg-secondary">A</span>
+                </div>
+            </div>
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-9" checked disabled autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-9">Used</label>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-dark-subtle  g-0 mb-2">
+            <div class="col border border-3 border-black">
+                <div class="position-relative top-50 start-50 translate-middle">
+                    Slippers of Spider Climbing
+                    <span class="badge text-bg-secondary">A</span>
+                </div>
+            </div>
+            <div class="col-3 border border-start-0 border-3 border-black">
+                <div class="btn-group " role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="infusion-10" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="infusion-10">Used</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
