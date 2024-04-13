@@ -16,6 +16,7 @@
             var cookies = Cookies.get();
             $.each(cookies, function (cookie) {
                 $("#" + cookie).prop("checked", cookies[cookie] === "true");
+                Cookies.set(cookie, cookies[cookie], { sameSite: 'strict', expires: 365 });
                 if (cookie.indexOf("form") != -1 && cookies[cookie] === "true") {
                     let index = cookie.substr(-1);
                     $("#info-form-" + index).prop("hidden", false);
