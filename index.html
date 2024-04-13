@@ -31,7 +31,7 @@
                 }
             });
             $("input.btn-check").on("click", function () {
-                Cookies.set(this.id, this.checked, { sameSite: 'strict' });
+                Cookies.set(this.id, this.checked, { sameSite: 'strict', expires: 365 });
                 if (this.id.indexOf("form") != -1) {
                     let index = this.id.substr(-1);
                     $("#info-form-" + index).prop("hidden", false);
