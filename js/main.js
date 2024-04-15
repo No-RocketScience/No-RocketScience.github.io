@@ -1,4 +1,10 @@
 $(function () {
+    for (let i = 0; i < infusions.length; i++) {
+        let infusion = infusions[i];
+        infusion.index = i + 1;
+        infusion.appendTo($("#container"), i === infusions.length - 1);
+    }
+
     var cookies = Cookies.get();
     $.each(cookies, function (cookie) {
         $("#" + cookie).prop("checked", cookies[cookie] === "true");
