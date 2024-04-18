@@ -1,15 +1,16 @@
 class Infusion {
-    constructor(name, text, attunement, isFix = false) {
+    constructor(name, text, attunement, isFix = false, isCustom = false) {
         this.name = name;
         this.text = text;
         this.attunement = attunement;
         this.isFix = isFix;
         this.index = 0;
+        this.isCustom = isCustom;
     }
 
-    appendTo(parent, isLast) {
+    generateHtml(isLast) {
         let row = $("<div>", {
-            class: "row bg-dark-subtle g-0"
+            class: "row bg-dark-subtle g-0 infusion"
         });
         let left_col = $("<div>", {
             class: "col border border-3 border-black align-middle" + (isLast ? "" : " border-bottom-0")
@@ -65,7 +66,12 @@ class Infusion {
         if (this.isHidden) {
             row.hide();
         }
-        $(parent).append(row);
+
+        return row;
+    }
+
+    toString() {
+        return JSON.stringify(this);
     }
 }
 
@@ -109,3 +115,13 @@ var infusions = [
         "While you wear these light shoes, you can move up, down , and across vertical surfaces and upside down along ceilings, while leaving your hands free. You have a climbing speed equal to your walking speed. However, the slippers don't allow you to move this way on a slippery surface, such as one covered by ice or oil.",
         true),
 ];
+
+let stored_custom_infusions = JSON.parse(localStorage.getItem("customInfusions"));
+if (stored_custom_infusions != null) {
+    let custom_infusions = [];
+    $.each(stored_custom_infusions, function (index) {
+        let infusion = stored_custom_infusions[index];
+        custom_infusions.push(new Infusion(infusion.name, infusion.text, infusion.attunement, false, true));
+    });
+    infusions = custom_infusions.concat(infusions);
+}
