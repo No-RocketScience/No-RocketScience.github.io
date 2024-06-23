@@ -117,8 +117,8 @@ var infusions = [
 ];
 
 let stored_custom_infusions = JSON.parse(localStorage.getItem("customInfusions"));
+let custom_infusions = [];
 if (stored_custom_infusions != null) {
-    let custom_infusions = [];
     $.each(stored_custom_infusions, function (index) {
         let infusion = stored_custom_infusions[index];
         custom_infusions.push(new Infusion(infusion.name, infusion.text, infusion.attunement, false, true));
