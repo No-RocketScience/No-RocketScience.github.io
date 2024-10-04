@@ -1,6 +1,6 @@
 $(function () {
     addInfusions();
-    applyCookieData();
+    applyData();
     addButtonChangeHandlers();
 });
 
@@ -56,20 +56,25 @@ function addInfusionAdder() {
     $("#container").append(row);
 }
 
-function applyCookieData() {
-    var cookies = Cookies.get();
-    $.each(cookies, function (cookie) {
-        if ((cookie.startsWith("infusion") || cookie.startsWith("form"))) {
-            applyInfusionAndFormData(cookies, cookie);
+function applyData() {
+    var infusionData = {};
+    $.each(infusions, function (index) {
+        let infusion = infusions[index];
+        infusionData["infusion-" + infusion.index] = localStorage.getItem("infusion-" + infusion.index) === "true";
+    });
+
+    $.each(infusionData, function (infusion) {
+        if ((infusion.startsWith("infusion") || infusion.startsWith("form"))) {
+            applyInfusionAndFormData(infusionData, infusion);
         }
     });
 }
 
-function applyInfusionAndFormData(cookies, cookie) {
-    $("#" + cookie).prop("checked", cookies[cookie] === "true");
-    Cookies.set(cookie, cookies[cookie], { sameSite: 'strict', expires: 365 });
-    if (cookie.indexOf("form") != -1 && cookies[cookie] === "true") {
-        let index = cookie.substr(-1);
+function applyInfusionAndFormData(infusions, infusion) {
+    $("#" + infusion).prop("checked", infusions[infusion]);
+    localStorage.setItem(infusion, infusions[infusion]);
+    if (infusion.indexOf("form") != -1 && infusions[infusion] === "true") {
+        let index = infusion.substr(-1);
         $("#info-form-" + index).prop("hidden", false);
         if (index != 1) {
             $("#info-form-1").prop("hidden", true);
@@ -85,20 +90,20 @@ function applyInfusionAndFormData(cookies, cookie) {
 
 function addButtonChangeHandlers() {
     $(".infusion input.btn-check, .forms input.btn-check").on("click", function () {
-        Cookies.set(this.id, this.checked, { sameSite: 'strict', expires: 365 });
+        localStorage.setItem(this.id, this.checked);
         if (this.id.indexOf("form") != -1) {
             let index = this.id.substr(-1);
             $("#info-form-" + index).prop("hidden", false);
             if (index != 1) {
-                Cookies.set("form1", false, { sameSite: 'strict' });
+                localStorage.setItem("form1", false);
                 $("#info-form-1").prop("hidden", true);
             }
             if (index != 2) {
-                Cookies.set("form2", false, { sameSite: 'strict' });
+                localStorage.setItem("form2", false);
                 $("#info-form-2").prop("hidden", true);
             }
             if (index != 3) {
-                Cookies.set("form3", false, { sameSite: 'strict' });
+                localStorage.setItem("form3", false);
                 $("#info-form-3").prop("hidden", true);
             }
         }

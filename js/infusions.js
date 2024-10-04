@@ -88,12 +88,13 @@ var infusions = [
         "While wearing this belt, your Strength score changes to 21. If your Strength is already equal to or greater than the belt's score, the item has no effect on you.",
         true,
         true),
+    new Infusion("Boots of Speed",
+        "While you wear these boots, you can use a bonus action and click the boots' heels together. If you do, the boots double your walking speed, and any creature that makes an opportunity attack against you has disadvantage on the attack roll. If you click your heels together again, you end the effect." +
+        "<br><br>When the boots' property has been used for a total of 10 minutes, the magic ceases to function until you finish a long rest.",
+        true),
     new Infusion("Cloak of the Bat",
         "While wearing this cloak, you have advantage on Dexterity (Stealth) checks. In an area of dim light or darkness, you can grip the edges of the cloak with both hands and use it to fly at a speed of 40 feet. If you ever fail to grip the cloak's edges while flying in this way, or if you are no longer in dim light or darkness, you lose this flying speed.<br>" +
         "While wearing the cloak in an area of dim light or darkness, you can use your action to cast Polymorph on yourself, transforming into a bat. While you are in the form of the bat, you retain your Intelligence, Wisdom, and Charisma scores. The cloak can't be used this way again until the next dawn.",
-        true),
-    new Infusion("Enhanced Arcane Focus",
-        "While holding this item, a creature gains +2 bonus to spell attack rolls. In addition, the creature ignores half cover when making a spell attack.",
         true),
     new Infusion("Enhanced Defense",
         "A creature gains a +2 bonus to Armor Class while wearing (armor) or wielding (shield) the infused item.",
