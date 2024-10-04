@@ -72,40 +72,42 @@ function applyData() {
 
 function applyInfusionAndFormData(infusions, infusion) {
     $("#" + infusion).prop("checked", infusions[infusion]);
-    localStorage.setItem(infusion, infusions[infusion]);
-    if (infusion.indexOf("form") != -1 && infusions[infusion] === "true") {
-        let index = infusion.substr(-1);
-        $("#info-form-" + index).prop("hidden", false);
-        if (index != 1) {
-            $("#info-form-1").prop("hidden", true);
-        }
-        if (index != 2) {
-            $("#info-form-2").prop("hidden", true);
-        }
-        if (index != 3) {
-            $("#info-form-3").prop("hidden", true);
-        }
-    }
+    setFormOrInfusion(infusion, infusions[infusion]);
 }
 
 function addButtonChangeHandlers() {
     $(".infusion input.btn-check, .forms input.btn-check").on("click", function () {
-        localStorage.setItem(this.id, this.checked);
-        if (this.id.indexOf("form") != -1) {
-            let index = this.id.substr(-1);
-            $("#info-form-" + index).prop("hidden", false);
-            if (index != 1) {
-                localStorage.setItem("form1", false);
-                $("#info-form-1").prop("hidden", true);
-            }
-            if (index != 2) {
-                localStorage.setItem("form2", false);
-                $("#info-form-2").prop("hidden", true);
-            }
-            if (index != 3) {
-                localStorage.setItem("form3", false);
-                $("#info-form-3").prop("hidden", true);
-            }
-        }
+        setFormOrInfusion(this.id, this.checked);
     });
+}
+
+function setFormOrInfusion(id, value) {
+    localStorage.setItem(id, value);
+    if (id.indexOf("infusion" != -1)) {
+        let infusion = infusions.filter((v, index, array) => {
+            return "infusion-" + v.index === id;
+        })[0];
+        if (infusion.attunement) {
+            $("#current-attuned-items").text(Number($("#current-attuned-items").text()) + (value ? 1 : -1));
+        }
+
+        if (!infusion.isCustom) {
+            $("#current-infused-items").text(Number($("#current-infused-items").text()) + (value ? 1 : -1));
+        }
+    } else if (id.indexOf("form") != -1) {
+        let index = id.substr(-1);
+        $("#info-form-" + index).prop("hidden", false);
+        if (index != 1) {
+            localStorage.setItem("form1", false);
+            $("#info-form-1").prop("hidden", true);
+        }
+        if (index != 2) {
+            localStorage.setItem("form2", false);
+            $("#info-form-2").prop("hidden", true);
+        }
+        if (index != 3) {
+            localStorage.setItem("form3", false);
+            $("#info-form-3").prop("hidden", true);
+        }
+    }
 }
