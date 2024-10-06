@@ -84,16 +84,12 @@ function addButtonChangeHandlers() {
 function setFormOrInfusion(id, value) {
     localStorage.setItem(id, value);
     if (id.indexOf("infusion" != -1)) {
-        let infusion = infusions.filter((v, index, array) => {
-            return "infusion-" + v.index === id;
-        })[0];
-        if (infusion.attunement) {
-            $("#current-attuned-items").text(Number($("#current-attuned-items").text()) + (value ? 1 : -1));
-        }
+        let attunedItems = infusions.filter((inf, _i, _a) => { return inf.attunement && $("#infusion-" + inf.index).prop("checked"); }).length;
+        $("#current-attuned-items").text(attunedItems);
 
-        if (!infusion.isCustom) {
-            $("#current-infused-items").text(Number($("#current-infused-items").text()) + (value ? 1 : -1));
-        }
+        let infusedItems = infusions.filter((inf, _i, _a) => { return !inf.isCustom && $("#infusion-" + inf.index).prop("checked"); }).length;
+        $("#current-infused-items").text(infusedItems);
+
     } else if (id.indexOf("form") != -1) {
         let index = id.substr(-1);
         $("#info-form-" + index).prop("hidden", false);
