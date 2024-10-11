@@ -60,7 +60,8 @@ function applyData() {
     var infusionData = {};
     $.each(infusions, function (index) {
         let infusion = infusions[index];
-        infusionData["infusion-" + infusion.index] = localStorage.getItem("infusion-" + infusion.index) === "true";
+        let value = infusion.isFix ? true : localStorage.getItem("infusion-" + infusion.index) === "true";
+        infusionData["infusion-" + infusion.index] = value;
     });
 
     $.each(infusionData, function (infusion) {
