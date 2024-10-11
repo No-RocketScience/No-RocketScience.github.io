@@ -70,6 +70,11 @@ function applyData() {
         infusionData["infusion-" + infusion.index] = value;
     });
 
+    let forms = ["form1", "form2", "form3"];
+    $.each(forms, function (index) {
+        infusionData[forms[index]] = localStorage.getItem(forms[index]) === "true";
+    });
+
     $.each(infusionData, function (infusion) {
         if ((infusion.startsWith("infusion") || infusion.startsWith("form"))) {
             applyInfusionAndFormData(infusionData, infusion);
@@ -90,14 +95,14 @@ function addButtonChangeHandlers() {
 
 function setFormOrInfusion(id, value) {
     localStorage.setItem(id, value);
-    if (id.indexOf("infusion" != -1)) {
+    if (id.indexOf("infusion") != -1) {
         let attunedItems = infusions.filter((inf, _i, _a) => { return inf.attunement && $("#infusion-" + inf.index).prop("checked"); }).length;
         $("#current-attuned-items").text(attunedItems);
 
         let infusedItems = infusions.filter((inf, _i, _a) => { return !inf.isCustom && $("#infusion-" + inf.index).prop("checked"); }).length;
         $("#current-infused-items").text(infusedItems);
 
-    } else if (id.indexOf("form") != -1) {
+    } else if (value === true && id.indexOf("form") != -1) {
         let index = id.substr(-1);
         $("#info-form-" + index).prop("hidden", false);
         if (index != 1) {
