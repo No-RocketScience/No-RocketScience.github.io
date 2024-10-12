@@ -3,6 +3,7 @@ $(function () {
     // add dropdown for spell infused item
 
     addForms();
+    addSpellInfusedItemOptions();
     addInfusions();
 
     initializeTooltips();
@@ -23,6 +24,56 @@ function addForms() {
         $("#forms").append(form.generateLabel());
         $("#forms-info").append(form.generateText());
     }
+}
+
+function addSpellInfusedItemOptions() {
+    let options = {
+        "1st Level": [
+            "Bane",
+            "Cause Fear",
+            "Comprehend Languages",
+            "Earth Tremor",
+            "Faerie Fire",
+            "Fog Cloud",
+            "Longstrider",
+            "Tasha's Caustic Brew",
+            "Tasha's Hideous Laughter"
+        ],
+        "2nd Level": [
+            "Arcane Lock",
+            "Blindness/Deafness",
+            "Borrowed Knowledge",
+            "Darkness",
+            "Earthbind",
+            "Enlarge/Reduce",
+            "Heat Metal",
+            "Hold Person",
+            "Silence",
+            "Mental Barrier",
+            "Mind Spike",
+            "Tasha's Mind Whip"
+        ]
+    };
+
+    let selectedSpell = localStorage.getItem("spell-infused-item");
+
+    for (let level of Object.keys(options)) {
+        let optionsGroup = $("<optgroup>", { "label": level });
+        options[level].forEach(element => {
+            let option = $("<option>", { "value": element });
+            option.html(element);
+            if (element === selectedSpell) {
+                option.prop("selected", true);
+            }
+            optionsGroup.append(option);
+        });
+
+        $("#select-spell-infused-item").append(optionsGroup);
+    }
+
+    $("#select-spell-infused-item").on("change", function () {
+        localStorage.setItem("spell-infused-item", $("#select-spell-infused-item option:selected").text());
+    });
 }
 
 function addInfusions() {

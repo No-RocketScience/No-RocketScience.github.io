@@ -1,3 +1,7 @@
 .tab-pane p:last-of-type {
     margin-bottom: 0;
 }
+
+optgroup+optgroup {
+    border-top: 1px solid black
+}
