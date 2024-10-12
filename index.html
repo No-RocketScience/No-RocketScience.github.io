@@ -21,7 +21,9 @@
     <script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
-    <script src="js/infusions.js"></script>
+    <script src="js/infusion.js"></script>
+    <script src="js/form.js"></script>
+    <script src="js/storage.js"></script>
     <script src="js/main.js"></script>
 </head>
 
@@ -91,36 +93,15 @@
                 </div>
             </div>
         </div>
-        <div class="row bg-dark-subtle g-0 forms">
+        <div class="row bg-dark-subtle g-0">
             <div class="col-4 border border-3 border-black align-middle">
                 <div class="position-relative top-50 start-50 translate-middle">Form</div>
             </div>
             <div class="col border border-start-0 border-3 border-black align-middle py-3">
-                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="btnradio" id="form1" autocomplete="off" checked>
-                    <label class="btn btn-outline-secondary rounded-0" for="form1">Battle</label>
-
-                    <input type="radio" class="btn-check" name="btnradio" id="form2" autocomplete="off">
-                    <label class="btn btn-outline-secondary rounded-0" for="form2">Scout</label>
-
-                    <input type="radio" class="btn-check" name="btnradio" id="form3" autocomplete="off">
-                    <label class="btn btn-outline-secondary rounded-0" for="form3">Worker</label>
-                </div>
+                <div id="forms" class="btn-group" role="group" aria-label="Forms"> </div>
             </div>
             <div class="w-100"></div>
-            <div class="col border border-top-0 border-3 border-black border-bottom-0 align-middle">
-                <span id="info-form-1">
-                    +1D4 to Weapon Attacks.<br>
-                    Reduce any damage taken by 2.
-                </span>
-                <span id="info-form-2" hidden>
-                    +1D4 to all Perception and Investigation checks.<br>
-                    Movementspeed +10ft.
-                </span>
-                <span id="info-form-3" hidden>
-                    +1D4 to all Tool/Strength Checks and Strength Saving Throws.<br>
-                    Count as large creature when pulling, pushing or carrying.
-                </span>
+            <div id="forms-info" class="col border border-top-0 border-3 border-black border-bottom-0 align-middle">
             </div>
         </div>
         <div class="mx-auto bg-dark-subtle g-0 text-start">

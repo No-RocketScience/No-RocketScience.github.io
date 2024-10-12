@@ -1,6 +1,12 @@
 $(function () {
-    initializeTooltips();
+    // rework data structure and saving
+    // add dropdown for spell infused item
+
+    addForms();
     addInfusions();
+
+    initializeTooltips();
+
     applyData();
     addButtonChangeHandlers();
 });
@@ -10,9 +16,18 @@ function initializeTooltips() {
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 }
 
+function addForms() {
+    for (let i = 0; i < Storage.forms.length; i++) {
+        let form = Storage.forms[i];
+        $("#forms").append(form.generateButton());
+        $("#forms").append(form.generateLabel());
+        $("#forms-info").append(form.generateText());
+    }
+}
+
 function addInfusions() {
-    for (let i = 0; i < infusions.length; i++) {
-        let infusion = infusions[i];
+    for (let i = 0; i < Storage.infusions.length; i++) {
+        let infusion = Storage.infusions[i];
         infusion.index = CryptoJS.MD5(infusion.name).toString();
         $("#container").append(infusion.generateHtml(false));
     }
@@ -64,15 +79,10 @@ function addInfusionAdder() {
 
 function applyData() {
     var infusionData = {};
-    $.each(infusions, function (index) {
-        let infusion = infusions[index];
+    $.each(Storage.infusions, function (index) {
+        let infusion = Storage.infusions[index];
         let value = infusion.isFix ? true : localStorage.getItem("infusion-" + infusion.index) === "true";
         infusionData["infusion-" + infusion.index] = value;
-    });
-
-    let forms = ["form1", "form2", "form3"];
-    $.each(forms, function (index) {
-        infusionData[forms[index]] = localStorage.getItem(forms[index]) === "true";
     });
 
     $.each(infusionData, function (infusion) {
@@ -88,7 +98,7 @@ function applyInfusionAndFormData(infusions, infusion) {
 }
 
 function addButtonChangeHandlers() {
-    $(".infusion input.btn-check, .forms input.btn-check").on("click", function () {
+    $(".infusion input.btn-check").on("click", function () {
         setFormOrInfusion(this.id, this.checked);
     });
 }
@@ -96,26 +106,11 @@ function addButtonChangeHandlers() {
 function setFormOrInfusion(id, value) {
     localStorage.setItem(id, value);
     if (id.indexOf("infusion") != -1) {
-        let attunedItems = infusions.filter((inf, _i, _a) => { return inf.attunement && $("#infusion-" + inf.index).prop("checked"); }).length;
+        let attunedItems = Storage.infusions.filter((inf, _i, _a) => { return inf.attunement && $("#infusion-" + inf.index).prop("checked"); }).length;
         $("#current-attuned-items").text(attunedItems);
 
-        let infusedItems = infusions.filter((inf, _i, _a) => { return !inf.isCustom && $("#infusion-" + inf.index).prop("checked"); }).length;
+        let infusedItems = Storage.infusions.filter((inf, _i, _a) => { return !inf.isCustom && $("#infusion-" + inf.index).prop("checked"); }).length;
         $("#current-infused-items").text(infusedItems);
 
-    } else if (value === true && id.indexOf("form") != -1) {
-        let index = id.substr(-1);
-        $("#info-form-" + index).prop("hidden", false);
-        if (index != 1) {
-            localStorage.setItem("form1", false);
-            $("#info-form-1").prop("hidden", true);
-        }
-        if (index != 2) {
-            localStorage.setItem("form2", false);
-            $("#info-form-2").prop("hidden", true);
-        }
-        if (index != 3) {
-            localStorage.setItem("form3", false);
-            $("#info-form-3").prop("hidden", true);
-        }
     }
 }
