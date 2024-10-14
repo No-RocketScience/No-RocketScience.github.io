@@ -5,57 +5,51 @@ class Form {
         this.enabled = enabled;
     }
 
-    id() {
+    toString() {
+        return this.name;
+    }
+
+    htmlId() {
         return "form-" + this.name.toLowerCase();
     }
 
     generateButton() {
-        this.button = $("<input>", {
+        let button = $("<input>", {
             type: "radio",
             class: "btn-check",
             name: "btnradio",
-            id: this.id(),
+            id: this.htmlId(),
             autocomplete: "off"
         });
 
-        this.button.prop("checked", this.enabled);
+        button.prop("checked", this.enabled);
 
-        this.button.on("click", function () {
-            for (let i = 0; i < Storage.forms.length; i++) {
-                let form = Storage.forms[i];
-                form.setState(form.id() === this.id);
-            }
+        let id = this.id;
+        button.on("click", function () {
+            Storage.db.forms.toCollection().modify(form => {
+                let state = form.id == id;
+                form.enabled = state;
+                $("#form-" + form.name.toLowerCase()).prop("checked", state);
+                $("#info-form-" + form.name.toLowerCase()).prop("hidden", !state);
+            });
         });
-        return this.button;
+
+        return button;
     }
 
     generateLabel() {
-        this.label = $("<label>", {
+        let label = $("<label>", {
             class: "btn btn-outline-secondary rounded-0",
-            for: this.id()
+            for: this.htmlId()
         }).html(this.name);
-        return this.label;
+        return label;
     }
 
     generateText() {
-        this.text = $("<span>", {
-            id: "info-" + this.id(),
+        let span = $("<span>", {
+            id: "info-" + this.htmlId(),
             hidden: !this.enabled
         }).html(this.text);
-        return this.text;
-    }
-
-    setState(state) {
-        this.enabled = state;
-        this.button.prop("checked", state);
-        this.text.prop("hidden", !state);
-    }
-
-    enable() {
-        this.setState(true);
-    }
-
-    disable() {
-        this.setState(false);
+        return span;
     }
 }

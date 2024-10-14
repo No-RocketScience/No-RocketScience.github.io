@@ -3,9 +3,21 @@ class Infusion {
         this.name = name;
         this.text = text;
         this.attunement = attunement;
+        this.enabled = isFix;
         this.isFix = isFix;
-        this.index = 0;
+        this.index = CryptoJS.MD5(name).toString();
         this.isCustom = isCustom;
+
+        Infusion.updateInfusedItems = function () {
+            Storage.db.infusions.filter(i => !i.isCustom && i.enabled).count(count => {
+                $("#current-infused-items").text(count);
+            });
+        };
+        Infusion.updateAttunedItems = function () {
+            Storage.db.infusions.filter(i => i.attunement && i.enabled).count(count => {
+                $("#current-attuned-items").text(count);
+            });
+        };
     }
 
     generateHtml(isLast) {
@@ -39,6 +51,14 @@ class Infusion {
             id: "infusion-" + this.index,
             autocomplete: "off"
         });
+
+        let id = this.id;
+        btn.on("click", function () {
+            Storage.db.infusions.update(id, { enabled: this.checked });
+            Infusion.updateAttunedItems();
+            Infusion.updateInfusedItems();
+        });
+
         if (this.isFix) {
             btn.prop("checked", true);
             btn.prop("disabled", true);

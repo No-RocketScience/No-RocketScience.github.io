@@ -1,16 +1,10 @@
-$(function () {
-    // rework data structure and saving
-    // add dropdown for spell infused item
-
+Storage.loaded = function () {
     addForms();
     addSpellInfusedItemOptions();
     addInfusions();
 
     initializeTooltips();
-
-    applyData();
-    addButtonChangeHandlers();
-});
+};
 
 function initializeTooltips() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -18,12 +12,11 @@ function initializeTooltips() {
 }
 
 function addForms() {
-    for (let i = 0; i < Storage.forms.length; i++) {
-        let form = Storage.forms[i];
+    Storage.db.forms.each(form => {
         $("#forms").append(form.generateButton());
         $("#forms").append(form.generateLabel());
         $("#forms-info").append(form.generateText());
-    }
+    });
 }
 
 function addSpellInfusedItemOptions() {
@@ -77,13 +70,9 @@ function addSpellInfusedItemOptions() {
 }
 
 function addInfusions() {
-    for (let i = 0; i < Storage.infusions.length; i++) {
-        let infusion = Storage.infusions[i];
-        infusion.index = CryptoJS.MD5(infusion.name).toString();
+    Storage.db.infusions.each(infusion => {
         $("#container").append(infusion.generateHtml(false));
-    }
-
-    addInfusionAdder();
+    }).then(function () { addInfusionAdder(); });
 }
 
 function addInfusion() {
@@ -91,8 +80,7 @@ function addInfusion() {
     let text = $("#new-infusion-text").val();
     let attunement = $("#new-infusion-attunement").prop("checked");
     let infusion = new Infusion(name, text, attunement);
-    custom_infusions.push(infusion);
-    localStorage.setItem("customInfusions", JSON.stringify(custom_infusions));
+    Storage.db.infusions.add(infusion);
     $("#container .infusion").first().before(infusion.generateHtml(false));
     $("#new-infusion-name").val("");
     $("#new-infusion-text").val("");
@@ -148,11 +136,6 @@ function applyInfusionAndFormData(infusions, infusion) {
     setFormOrInfusion(infusion, infusions[infusion]);
 }
 
-function addButtonChangeHandlers() {
-    $(".infusion input.btn-check").on("click", function () {
-        setFormOrInfusion(this.id, this.checked);
-    });
-}
 
 function setFormOrInfusion(id, value) {
     localStorage.setItem(id, value);
@@ -162,6 +145,5 @@ function setFormOrInfusion(id, value) {
 
         let infusedItems = Storage.infusions.filter((inf, _i, _a) => { return !inf.isCustom && $("#infusion-" + inf.index).prop("checked"); }).length;
         $("#current-infused-items").text(infusedItems);
-
     }
 }

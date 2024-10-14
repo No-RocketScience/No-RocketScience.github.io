@@ -1,11 +1,35 @@
 class Storage {
     constructor() {
-        Storage.forms = [
+        Storage.loaded = function () { };
+        Storage.db = new Dexie("Storage");
+
+        Storage.db.version(1).stores({
+            forms: `
+            ++id,
+            name,
+            text,
+            isEnabled`,
+
+            infusions: `
+            ++id,
+            name,
+            text,
+            attunement,
+            enabled,
+            isFix,
+            isCustom`
+        });
+
+        Storage.db.forms.mapToClass(Form);
+        Storage.db.infusions.mapToClass(Infusion);
+
+        let forms = [
             new Form("Battle", "+1D4 to Weapon Attacks.<br>Reduce any damage taken by 2.", true),
             new Form("Scout", "+1D4 to all Perception and Investigation checks.<br>Movementspeed +10ft.", false),
             new Form("Worker", "+1D4 to all Tool/Strength Checks and Strength Saving Throws.<br>Count as large creature when pulling, pushing or carrying.", false)
         ];
-        Storage.infusions = [
+
+        let infusions = [
             new Infusion("Armor of Resistance",
                 "You have resistance to one type (Acid, Cold, Fire, Force, Lightning, Necrotic, Poison, Psychic, Radiant, Thunder) of damage while you wear this armor.",
                 true),
@@ -47,17 +71,28 @@ class Storage {
                 true),
         ];
 
-        let stored_custom_infusions = JSON.parse(localStorage.getItem("customInfusions"));
-        let custom_infusions = [];
-        if (stored_custom_infusions != null) {
-            $.each(stored_custom_infusions, function (index) {
-                let infusion = stored_custom_infusions[index];
-                custom_infusions.push(new Infusion(infusion.name, infusion.text, infusion.attunement, false, true));
-            });
-            Storage.infusions = custom_infusions.concat(Storage.infusions);
-        }
+        let promises = [];
 
-        console.log("storage loaded!");
+        forms.forEach(function (form) {
+            promises.push(Storage.db.forms.where("name").equals(form.name).count(count => {
+                if (count === 0) {
+                    Storage.db.forms.add(form);
+                }
+            }));
+        });
+
+        infusions.forEach(function (infusion) {
+            promises.push(Storage.db.infusions.where("name").equals(infusion.name).count(count => {
+                if (count === 0) {
+                    Storage.db.infusions.add(infusion);
+                }
+            }));
+        });
+
+        Promise.all(promises).then(_ => {
+            console.log("storage loaded!");
+            Storage.loaded();
+        });
     }
 }
 
