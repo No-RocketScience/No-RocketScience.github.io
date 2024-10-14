@@ -1,7 +1,9 @@
 Storage.loaded = function () {
     addForms();
-    addSpellInfusedItemOptions();
+    initializeSpellInfusedItem();
     addInfusions();
+    Infusion.updateAttunedItems();
+    Infusion.updateInfusedItems();
 
     initializeTooltips();
 };
@@ -19,7 +21,7 @@ function addForms() {
     });
 }
 
-function addSpellInfusedItemOptions() {
+function initializeSpellInfusedItem() {
     let options = {
         "1st Level": [
             "Bane",
@@ -67,6 +69,19 @@ function addSpellInfusedItemOptions() {
     $("#select-spell-infused-item").on("change", function () {
         localStorage.setItem("spell-infused-item", $("#select-spell-infused-item option:selected").text());
     });
+
+    $("#spell-infused-item-reset").on("click", function () {
+        $("#spell-infused-item-used").text(0);
+    });
+
+    $("#spell-infused-item-use").on("click", function () {
+        let used = Number($("#spell-infused-item-used").text()) + 1;
+        localStorage.setItem("spell-infused-item-used", used);
+        $("#spell-infused-item-used").text(used);
+    });
+
+    let used = localStorage.getItem("spell-infused-item-used");
+    $("#spell-infused-item-used").text(used);
 }
 
 function addInfusions() {
