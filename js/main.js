@@ -1,7 +1,12 @@
-Storage.loaded = function () {
-    addForms();
+Storage.loaded = async function () {
+    let promises = [];
+    promises.push(addFeats());
+    promises.push(addForms());
     initializeSpellInfusedItem();
-    addInfusions();
+    promises.push(addInfusions());
+
+    await Promise.all(promises);
+
     Infusion.updateAttunedItems();
     Infusion.updateInfusedItems();
 
@@ -9,12 +14,27 @@ Storage.loaded = function () {
 };
 
 function initializeTooltips() {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl));
+    $(".hide-later").hide();
+}
+
+function addFeats() {
+    return Storage.db.feats.toArray((feats) => {
+        feats
+            .sort((a, b) => {
+                if ((a.uses > 0 && b.uses > 0) || (a === 0 && b === 0)) {
+                    return a.name.localeCompare(b.name);
+                }
+
+                return a.uses > 0 ? -1 : 1;
+            })
+            .forEach((feat, index) => $("#feats").append(feat.toHtml(feats.length - 1 === index)));
+    });
 }
 
 function addForms() {
-    Storage.db.forms.each(form => {
+    return Storage.db.forms.each((form) => {
         $("#forms").append(form.generateButton());
         $("#forms").append(form.generateLabel());
         $("#forms-info").append(form.generateText());
@@ -32,7 +52,7 @@ function initializeSpellInfusedItem() {
             "Fog Cloud",
             "Longstrider",
             "Tasha's Caustic Brew",
-            "Tasha's Hideous Laughter"
+            "Tasha's Hideous Laughter",
         ],
         "2nd Level": [
             "Arcane Lock",
@@ -46,16 +66,16 @@ function initializeSpellInfusedItem() {
             "Silence",
             "Mental Barrier",
             "Mind Spike",
-            "Tasha's Mind Whip"
-        ]
+            "Tasha's Mind Whip",
+        ],
     };
 
     let selectedSpell = localStorage.getItem("spell-infused-item");
 
     for (let level of Object.keys(options)) {
-        let optionsGroup = $("<optgroup>", { "label": level });
-        options[level].forEach(element => {
-            let option = $("<option>", { "value": element });
+        let optionsGroup = $("<optgroup>", { label: level });
+        options[level].forEach((element) => {
+            let option = $("<option>", { value: element });
             option.html(element);
             if (element === selectedSpell) {
                 option.prop("selected", true);
@@ -72,10 +92,11 @@ function initializeSpellInfusedItem() {
 
     $("#spell-infused-item-reset").on("click", function () {
         $("#spell-infused-item-used").text(0);
+        localStorage.setItem("spell-infused-item-used", 0);
     });
 
     $("#spell-infused-item-use").on("click", function () {
-        let used = Number($("#spell-infused-item-used").text()) + 1;
+        let used = (Number($("#spell-infused-item-used").text()) + 1).clamp(0, 10);
         localStorage.setItem("spell-infused-item-used", used);
         $("#spell-infused-item-used").text(used);
     });
@@ -85,9 +106,13 @@ function initializeSpellInfusedItem() {
 }
 
 function addInfusions() {
-    Storage.db.infusions.each(infusion => {
-        $("#container").append(infusion.generateHtml(false));
-    }).then(function () { addInfusionAdder(); });
+    return Storage.db.infusions
+        .each((infusion) => {
+            $("#container").append(infusion.generateHtml(false));
+        })
+        .then(function () {
+            addInfusionAdder();
+        });
 }
 
 function addInfusion() {
@@ -103,14 +128,16 @@ function addInfusion() {
 
 function addInfusionAdder() {
     let row = $("<div>", {
-        class: "row bg-dark-subtle g-0 border border-3 border-black align-middle"
+        class: "row bg-dark-subtle g-0 border border-3 border-black align-middle",
     });
 
     let input_group_name = $("<div>", { class: "input-group rounded-0" });
     let infusion_name_span = $("<span>", { class: "input-group-text rounded-0" }).html("Name");
     let infusion_name = $("<input>", { id: "new-infusion-name", class: "form-control rounded-0", type: "text" });
     let infusion_attunement = $("<input>", { id: "new-infusion-attunement", class: "btn-check", type: "checkbox", autocomplete: "off" });
-    let infusion_attunement_label = $("<label>", { class: "btn btn-outline-secondary col-3 rounded-0", for: "new-infusion-attunement" }).html("Attunement");
+    let infusion_attunement_label = $("<label>", { class: "btn btn-outline-secondary col-3 rounded-0", for: "new-infusion-attunement" }).html(
+        "Attunement",
+    );
     input_group_name.append(infusion_name_span);
     input_group_name.append(infusion_name);
     input_group_name.append(infusion_attunement);
@@ -123,7 +150,7 @@ function addInfusionAdder() {
     input_group_textarea.append(infusion_text);
 
     let add_button = $("<button>", { type: "button", class: "col btn btn-secondary rounded-0" }).html("Add");
-    add_button.prop("checked", true)
+    add_button.prop("checked", true);
     add_button.on("click", addInfusion);
     row.append(input_group_name);
     row.append(input_group_textarea);
@@ -140,7 +167,7 @@ function applyData() {
     });
 
     $.each(infusionData, function (infusion) {
-        if ((infusion.startsWith("infusion") || infusion.startsWith("form"))) {
+        if (infusion.startsWith("infusion") || infusion.startsWith("form")) {
             applyInfusionAndFormData(infusionData, infusion);
         }
     });
@@ -151,14 +178,17 @@ function applyInfusionAndFormData(infusions, infusion) {
     setFormOrInfusion(infusion, infusions[infusion]);
 }
 
-
 function setFormOrInfusion(id, value) {
     localStorage.setItem(id, value);
     if (id.indexOf("infusion") != -1) {
-        let attunedItems = Storage.infusions.filter((inf, _i, _a) => { return inf.attunement && $("#infusion-" + inf.index).prop("checked"); }).length;
+        let attunedItems = Storage.infusions.filter((inf, _i, _a) => {
+            return inf.attunement && $("#infusion-" + inf.index).prop("checked");
+        }).length;
         $("#current-attuned-items").text(attunedItems);
 
-        let infusedItems = Storage.infusions.filter((inf, _i, _a) => { return !inf.isCustom && $("#infusion-" + inf.index).prop("checked"); }).length;
+        let infusedItems = Storage.infusions.filter((inf, _i, _a) => {
+            return !inf.isCustom && $("#infusion-" + inf.index).prop("checked");
+        }).length;
         $("#current-infused-items").text(infusedItems);
     }
 }

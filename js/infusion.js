@@ -47,7 +47,7 @@ class Infusion {
         let btn_group = $("<div>", {
             class: "btn-group w-100",
             role: "group",
-            "aria-label": "Basic checkbox toggle button group",
+            "aria-label": "button group for Infusion " + this.name,
         });
         let btn = $("<input>", {
             type: "checkbox",
