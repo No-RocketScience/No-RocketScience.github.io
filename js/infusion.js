@@ -77,7 +77,7 @@ class Infusion {
             btn.prop("disabled", true);
         } else {
             btn.prop("checked", this.enabled);
-            if (that.enablingFeats.length > 0) {
+            if (that.enablingFeats !== undefined && that.enablingFeats.length > 0) {
                 that.enablingFeats.forEach((featId) => {
                     $("#feat-" + featId).toggle(this.enabled);
                 });
