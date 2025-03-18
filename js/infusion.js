@@ -7,6 +7,7 @@ class Infusion {
         this.isFix = isFix;
         this.index = CryptoJS.MD5(name).toString();
         this.isCustom = isCustom;
+        this.enablingFeats = [];
 
         Infusion.updateInfusedItems = function () {
             Storage.db.infusions
@@ -56,11 +57,19 @@ class Infusion {
             autocomplete: "off",
         });
 
-        let id = this.id;
+        let that = this;
         btn.on("click", function () {
-            Storage.db.infusions.update(id, { enabled: this.checked });
+            Storage.db.infusions.update(that.id, { enabled: this.checked });
             Infusion.updateAttunedItems();
             Infusion.updateInfusedItems();
+
+            if (that.enablingFeats.length === 0) {
+                return;
+            }
+
+            that.enablingFeats.forEach((featId) => {
+                $("#feat-" + featId).toggle(this.checked);
+            });
         });
 
         if (this.isFix) {
@@ -68,6 +77,11 @@ class Infusion {
             btn.prop("disabled", true);
         } else {
             btn.prop("checked", this.enabled);
+            if (that.enablingFeats.length > 0) {
+                that.enablingFeats.forEach((featId) => {
+                    $("#feat-" + featId).toggle(this.enabled);
+                });
+            }
         }
         btn_group.append(btn);
 

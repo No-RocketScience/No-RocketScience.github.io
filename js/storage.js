@@ -171,6 +171,12 @@ class Storage {
             ),
         ];
 
+        let infusionFeatMappings = {
+            "Boots of Speed": ["Boots of Speed"],
+            "Cloak of the Bat": ["Cloak of the Bat (Polymorph)"],
+            "Mind Sharpener": ["Mind Sharpener"],
+        };
+
         let promises = [];
 
         forms.forEach(function (form) {
@@ -180,20 +186,7 @@ class Storage {
                     .equals(form.name)
                     .count((count) => {
                         if (count === 0) {
-                            Storage.db.forms.add(form);
-                        }
-                    }),
-            );
-        });
-
-        infusions.forEach(function (infusion) {
-            promises.push(
-                Storage.db.infusions
-                    .where("name")
-                    .equals(infusion.name)
-                    .count((count) => {
-                        if (count === 0) {
-                            Storage.db.infusions.add(infusion);
+                            return Storage.db.forms.add(form);
                         }
                     }),
             );
@@ -207,15 +200,48 @@ class Storage {
                     .count((count) => {
                         if (count === 0) {
                             console.log("adding " + feat.name);
-                            Storage.db.feats.add(feat);
+                            return Storage.db.feats.add(feat);
                         }
                     }),
             );
         });
 
         Promise.all(promises).then((_) => {
-            console.log("storage loaded!");
-            Storage.loaded();
+            let innerPromises = [];
+            infusions.forEach(function (infusion) {
+                innerPromises.push(
+                    Storage.db.infusions
+                        .where("name")
+                        .equals(infusion.name)
+                        .count((count) => {
+                            if (count === 0) {
+                                return Storage.db.infusions.add(infusion).then(async (infusionId) => {
+                                    let featMappings = infusionFeatMappings[infusion.name];
+                                    console.log(infusion.name + " got infusionid " + infusionId + " and feats " + featMappings);
+                                    if (featMappings === undefined || featMappings.length === 0) {
+                                        return;
+                                    }
+
+                                    for (let i in featMappings) {
+                                        let feat = featMappings[i];
+                                        console.log("adding feat to enabled feats: " + feat);
+                                        let dbFeat = (await Storage.db.feats.where("name").equals(feat).toArray())[0];
+                                        console.log(infusion.name + " got feat " + feat + " from db: " + dbFeat);
+                                        infusion.enablingFeats.push(dbFeat.id);
+                                    }
+
+                                    console.log("Updating infusion " + infusion.name + " with enabling feats " + infusion.enablingFeats);
+                                    await Storage.db.infusions.update(infusionId, { enablingFeats: infusion.enablingFeats });
+                                });
+                            }
+                        }),
+                );
+            });
+
+            Promise.all(innerPromises).then(() => {
+                console.log("storage loaded!");
+                Storage.loaded();
+            });
         });
     }
 }

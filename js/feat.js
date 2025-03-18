@@ -16,7 +16,7 @@ class Feat {
 
         let topLevelClassExtension = isLast ? "" : " border-bottom-0";
 
-        let container = $("<div>", { class: containerClass });
+        let container = $("<div>", { class: containerClass, id: "feat-" + this.id });
 
         let nameOuterDiv = $("<div>", { class: "col border border-black border-2 border-end-0" + topLevelClassExtension });
         let nameInnerDiv = $("<div>", { class: "position-relative top-50 start-50 translate-middle" }).html(this.name);
