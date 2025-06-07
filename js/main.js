@@ -119,7 +119,7 @@ function addInfusion() {
     let name = $("#new-infusion-name").val();
     let text = $("#new-infusion-text").val();
     let attunement = $("#new-infusion-attunement").prop("checked");
-    let infusion = new Infusion(name, text, attunement);
+    let infusion = new Infusion(name, text, attunement, false, true);
     Storage.db.infusions.add(infusion);
     $("#container .infusion").first().before(infusion.generateHtml(false));
     $("#new-infusion-name").val("");
