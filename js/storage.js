@@ -175,6 +175,7 @@ class Storage {
             "Boots of Speed": ["Boots of Speed"],
             "Cloak of the Bat": ["Cloak of the Bat (Polymorph)"],
             "Mind Sharpener": ["Mind Sharpener"],
+            "Radiant Weapon": ["Radiant Weapon"],
         };
 
         let promises = [];
