@@ -106,13 +106,14 @@ function initializeSpellInfusedItem() {
 }
 
 function addInfusions() {
-    return Storage.db.infusions
-        .each((infusion) => {
+    return Storage.db.infusions.toArray((infusions) => {
+        infusions.sort((a, b) => {
+            return a.name.localeCompare(b.name);
+        }).forEach((infusion, index) => {
             $("#container").append(infusion.generateHtml(false));
-        })
-        .then(function () {
-            addInfusionAdder();
         });
+        addInfusionAdder();
+    });
 }
 
 function addInfusion() {
