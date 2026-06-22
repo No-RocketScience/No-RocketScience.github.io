@@ -111,7 +111,7 @@ class Storage {
             ),
             new Feat(
                 "Strike of the Hill Giant",
-                'Once per turn, when I hit with a <a href="#" data-bs-toggle="tooltip" data-bs-title="melee weapon attack">MWA</a> or thrown weapon, the target takes +1d6 damage.<br> It must then make a Str save DC 18 (8 + PB + Str/Con) or be knocked prone.<br> I can do this ' +
+                'Once per turn, when I hit with a <a href="#" data-bs-toggle="tooltip" data-bs-title="melee weapon attack">MWA</a> or thrown weapon, the target takes +1d6 damage.<br> It must then make a Str save DC ' + strSaveDC + ' or be knocked prone.<br> I can do this ' +
                 proficencyBonus +
                 " times per long rest.",
                 proficencyBonus,
@@ -172,6 +172,12 @@ class Storage {
                 "Gem of Seeing",
                 "This gem has 3 charges. As an action, you can speak the gem's command word and expend 1 charge. For the next 10 minutes, you have truesight out to 120 feet when you peer through the gem.",
                 3,
+                "Dawn",
+            ),
+            new Feat(
+                "Stomp",
+                "When attacking, you can use the attack to stomp. Every creature within 10 ft must succeed on a Str save DC " + strSaveDC + " or be knocked prone.",
+                proficencyBonus,
                 "Dawn",
             ),
             // new Feat(
