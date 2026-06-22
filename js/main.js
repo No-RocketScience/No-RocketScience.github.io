@@ -11,7 +11,16 @@ Storage.loaded = async function () {
     Infusion.updateInfusedItems();
 
     initializeTooltips();
+    addResetAll();
 };
+
+function addResetAll(){
+    $("#resetAll").click(() => {
+        localStorage.clear();
+        Storage.db.delete();
+        window.location.reload();
+    })
+}
 
 function initializeTooltips() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
