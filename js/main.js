@@ -1,11 +1,9 @@
 Storage.loaded = async function () {
-    let promises = [];
-    promises.push(addFeats());
-    promises.push(addForms());
+    await addFeats();
+    await addForms();
+    addArcaneLimb();
     initializeSpellInfusedItem();
-    promises.push(addInfusions());
-
-    await Promise.all(promises);
+    await addInfusions();
 
     Infusion.updateAttunedItems();
     Infusion.updateInfusedItems();
@@ -14,7 +12,7 @@ Storage.loaded = async function () {
     addResetAll();
 };
 
-function addResetAll(){
+function addResetAll() {
     $("#resetAll").click(() => {
         localStorage.clear();
         Storage.db.delete();
@@ -111,7 +109,41 @@ function initializeSpellInfusedItem() {
     });
 
     let used = localStorage.getItem("spell-infused-item-used");
+    if (used === null) {
+        used = 0;
+    }
     $("#spell-infused-item-used").text(used);
+}
+
+function addArcaneLimb() {
+    let arcaneLimbHealth = level * 3;
+    let savedHealth = localStorage.getItem("arcane-limb-health");
+    if (savedHealth === null) {
+        savedHealth = arcaneLimbHealth;
+    }
+
+    $('#arcane-limb-health').text(savedHealth + "/" + arcaneLimbHealth);
+    saveArcaneLimbHealth(savedHealth);
+
+    $('#arcane-limb-minus').on("click", function () {
+        savedHealth = (--savedHealth).clamp(0, arcaneLimbHealth);
+        $('#arcane-limb-health').text(savedHealth + "/" + arcaneLimbHealth);
+        saveArcaneLimbHealth(savedHealth);
+    });
+    $('#arcane-limb-plus').on("click", function () {
+        savedHealth = (++savedHealth).clamp(0, arcaneLimbHealth);
+        $('#arcane-limb-health').text(savedHealth + "/" + arcaneLimbHealth);
+        saveArcaneLimbHealth(savedHealth);
+    });
+    $('#arcane-limb-reset').on("click", function () {
+        savedHealth = arcaneLimbHealth;
+        $('#arcane-limb-health').text(savedHealth + "/" + arcaneLimbHealth);
+        saveArcaneLimbHealth(savedHealth);
+    });
+}
+
+function saveArcaneLimbHealth(health) {
+    localStorage.setItem("arcane-limb-health", health);
 }
 
 function addInfusions() {
