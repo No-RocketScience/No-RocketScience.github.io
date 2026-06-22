@@ -3,7 +3,7 @@ class Storage {
         Storage.loaded = function () { };
         Storage.db = new Dexie("Storage");
 
-        Storage.db.version(1.1).stores({
+        Storage.db.version(1.2).stores({
             forms: `
             ++id,
             name,
@@ -176,7 +176,7 @@ class Storage {
             ),
             new Feat(
                 "Stomp",
-                "When attacking, you can use the attack to stomp. Every creature within 10 ft must succeed on a Str save DC " + strSaveDC + " or be knocked prone.",
+                "When attacking, you can use one attack to stomp. Every creature within 10 ft must succeed on a Str save DC " + strSaveDC + " or be knocked prone.",
                 proficencyBonus,
                 "Dawn",
             ),
