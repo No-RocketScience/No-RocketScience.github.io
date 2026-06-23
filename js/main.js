@@ -14,9 +14,11 @@ Storage.loaded = async function () {
 
 function addResetAll() {
     $("#resetAll").click(() => {
-        localStorage.clear();
-        Storage.db.delete();
-        window.location.reload();
+        if (confirm("Reset all data?")) {
+            localStorage.clear();
+            Storage.db.delete();
+            window.location.reload();
+        }
     })
 }
 
